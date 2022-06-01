@@ -8,27 +8,39 @@ var connection = mysql.createConnection({
   database: "Stundentafel"
 });
 
-app.get('/', function (req, res) {
-   res.send('Hello World');
+app.get('/test', function (req, res) {
+  var query = connection.query("SELECT * FROM Lehrer", function(err, result, fields){
+    if (err) throw err;
+    // if there is no error, you have the result
+    // iterate for all the rows in result
+    Object.keys(result).forEach(function(key) {
+      var row = result[key];
+      console.log(row);
+      console.log(row.Kuerzel);
+      console.log(row.Abwesenheitsnotiz);
+      console.log(row.Fortbildungs_ID)
+    });
+  });
+  
+  res.send('Hello World');
 })
 
-var server = app.listen(8081, function () {
-   //var host = server.address().address
-   var host = 'localhost';
-   var port = server.address().port
-   console.log(host)
-   
-   console.log("Example app listening at http://%s:%s", host, port)
-
-
-
-   connection.connect(function(err) {
+function connectMySQL(){
+  connection.connect(function(err) {
     if (err) {
       return console.error('error: ' + err.message);
     }
-  
-    console.log('Connected to the MySQL server.');
   });
+}
+
+var server = app.listen(8081, function () {
+  //var host = server.address().address
+  var host = 'localhost';
+  var port = server.address().port;
+  
+  connectMySQL();
+  
+  console.log("Example app listening at http://%s:%s", host, port);
 })
 
 
